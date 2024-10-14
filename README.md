@@ -5,7 +5,7 @@ A pipeline based image processing tool written in Rust for creating glitch effec
 ## Usage
 
 ```sh
-cargo run -- -i img.jpg -o output.jpg -c example_fx/pipe.json
+cargo run -- -i img.jpg -o output.jpg -c examples/all.json
 ```
 
 ## Custom Pipelines
