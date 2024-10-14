@@ -38,14 +38,14 @@ pub fn sort_pixel(img: &DynamicImage, mode: &String, direction: &String, thresho
 
     // Apply the sort_with_options function
     sort_with_options(&mut buf, &options);
-    println!("Applied sort_pixel with options: {:?}", options);
+    print!("Applied sort_pixel with options: {:?}", options);
 
     // Convert the buffer back to a DynamicImage and return it
     DynamicImage::ImageRgb8(buf)
 }
 
 pub fn rotate(img: &DynamicImage, angle: f32) -> Result<DynamicImage, String> {
-    print!("Applied rotate with angle: {}\n", angle);
+    print!("Applied rotate with angle: {}", angle);
 
     match angle.rem_euclid(360.0) {
         0.0 => Ok(img.clone()),
@@ -57,7 +57,7 @@ pub fn rotate(img: &DynamicImage, angle: f32) -> Result<DynamicImage, String> {
 }
 
 pub fn desync(img: &DynamicImage, x_shift: i32, y_shift: i32) -> Result<DynamicImage, String> {
-    println!("Applied desync with x_shift: {}, y_shift: {}", x_shift, y_shift);
+    print!("Applied desync with x_shift: {}, y_shift: {}", x_shift, y_shift);
 
     let (width, height) = img.dimensions();
     let mut output = RgbaImage::new(width, height);
@@ -85,7 +85,7 @@ pub fn desync(img: &DynamicImage, x_shift: i32, y_shift: i32) -> Result<DynamicI
 }
 
 pub fn wind(img: &DynamicImage, direction: &String, strength: u32) -> Result<DynamicImage, String> {
-    println!("Applied wind effect with direction: {:?}, strength: {}", direction, strength);
+    print!("Applied wind effect with direction: {:?}, strength: {}", direction, strength);
 
     let (width, height) = img.dimensions();
     let mut output = RgbaImage::new(width, height);
@@ -140,7 +140,7 @@ pub fn pixelate(img: &DynamicImage, block_size: u32) -> DynamicImage {
             }
         }
     }
-    print!("Applied pixelate with block_size: {}\n", block_size);
+    print!("Applied pixelate with block_size: {}", block_size);
     output
 }
 
@@ -177,7 +177,7 @@ pub fn oil_painting(img: &DynamicImage, radius: u32, intensity_levels: u8) -> Dy
             output.put_pixel(x, y, Rgba([r, g, b, 255]));
         }
     }
-    print!("Applied oil_painting with radius: {}, intensity_levels: {}\n", radius, intensity_levels);
+    print!("Applied oil_painting with radius: {}, intensity_levels: {}", radius, intensity_levels);
     output
 }
 
@@ -196,7 +196,7 @@ pub fn scan_lines(
     let angle_rad = angle.unwrap_or_else(|| rng.gen_range(0.0..std::f32::consts::PI));
     let opacity = opacity.unwrap_or_else(|| rng.gen_range(0.3..=0.7));
 
-    println!("Applied scan lines with thickness: {}, spacing: {}, angle: {:.2}rad, opacity: {:.2}", 
+    print!("Applied scan lines with thickness: {}, spacing: {}, angle: {:.2}rad, opacity: {:.2}", 
              thickness, spacing, angle_rad, opacity);
 
     let (width, height) = img.dimensions();
@@ -252,10 +252,7 @@ pub fn glitch(
         }
     }
 
-    println!(
-        "Applied glitch with num_glitches: {}, max_offset: {}, direction: {}, noisy: {}",
-        num_glitches, max_offset, direction, noisy
-    );
+    print!("Applied glitch with num_glitches: {}, max_offset: {}, direction: {}, noisy: {}", num_glitches, max_offset, direction, noisy);
     output
 }
 

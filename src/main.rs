@@ -2,6 +2,7 @@ use clap::Parser;
 use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
+use std::time::Instant;
 mod fx;
 
 #[derive(Parser, Debug)]
@@ -30,7 +31,6 @@ struct TransformConfig {
 struct Config {
     transformations: Vec<TransformConfig>,
 }
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
@@ -39,12 +39,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut img = image::open(&args.input)?;
 
+    let total_start = Instant::now();
     for transform in config.transformations {
+        let start = Instant::now();
         img = apply_transformation(img, &transform)?;
+        let duration = start.elapsed();
+        println!(". Time: {} ms\n", duration.as_millis());
     }
+    let total_duration = total_start.elapsed();
 
     img.save(&args.output)?;
     println!("Transformations applied and saved to {:?}", args.output);
+    println!("Total time: {} ms", total_duration.as_millis());
 
     Ok(())
 }
@@ -52,18 +58,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -> Result<image::DynamicImage, Box<dyn std::error::Error>> {
     match transform.name.as_str() {
         "grayscale" => {
-            print!("Grayscaled image\n");
+            print!("Grayscaled image");
             Ok(img.grayscale())
         },
         "invert" => {
             let mut inverted = img;
             inverted.invert();
-            print!("Inverted image\n");
+            print!("Inverted image");
             Ok(inverted)
         },
         "blur" => {
             let sigma = transform.params["sigma"].as_f64().unwrap_or(2.0) as f32;
-            print!("Blurred image with sigma {}\n", sigma);
+            print!("Blurred image with sigma {}", sigma);
             Ok(img.blur(sigma))
         },
         "pixelate" => {
@@ -109,7 +115,6 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
             let angle = transform.params["angle"].as_f64().unwrap_or(0.0) as f32;
             Ok(fx::scan_lines(&img, Some(line_thickness), Some(line_spacing), Some(angle), Some(opacity))?)
         },
-
         _ => Err("Invalid transformation specified".into()),
     }
 }
