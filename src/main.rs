@@ -1,7 +1,6 @@
 mod fx;
 
 use clap::Parser;
-use image::DynamicImage;
 use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
@@ -19,23 +18,24 @@ struct Args {
     #[arg(short, long)]
     transform: String,
 }
-
+const BLOCK_SIZE: u32 = 10;
+const SIGMA: f32 = 2.0;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
-    let img = image::open(&args.input)?;
+    let mut img = image::open(&args.input)?;
 
     let transformed_img = match args.transform.as_str() {
         "grayscale" => img.grayscale(),
         "invert" => {
-            let mut img = img;
             img.invert();
             img
         },
-        "blur" => img.blur(2.0),
-        "pixelate" => fx::pixelate(&img, 10),
+        "blur" => img.blur(SIGMA),
+        "pixelate" => fx::pixelate(&img, BLOCK_SIZE),
         "oil_painting" => fx::oil_painting(&img, 4, 30),
         "glitch" => fx::glitch(&img, 50, 10),
+        "sort" => fx::sort_pixel(&img),
         _ => return Err("Invalid transformation specified".into()),
     };
 

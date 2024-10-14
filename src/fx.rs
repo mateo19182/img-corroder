@@ -1,5 +1,26 @@
-use image::{DynamicImage, GenericImage, GenericImageView, Rgba};
+use image::{RgbImage, DynamicImage, GenericImage, GenericImageView, Rgba};
 use rand::Rng;
+use asdf_pixel_sort::{sort_with_options, PColor, Options, Mode, Direction};
+
+pub fn sort_pixel(img: &DynamicImage) -> DynamicImage {
+    // Convert the DynamicImage to an RgbImage
+    let mut buf: RgbImage = img.to_rgb8();
+
+    // Define the color and options for sorting
+    let color = PColor::new(0, 62, 214);
+    let options = Options {
+        mode: Mode::Black(color),
+        //mode: Mode::White(color),
+        //mode: Mode::Brightness(50), // 0-255
+        direction: Direction::Both // Row, Column, Both
+    };
+
+    // Apply the sort_with_options function
+    sort_with_options(&mut buf, &options);
+
+    // Convert the buffer back to a DynamicImage and return it
+    DynamicImage::ImageRgb8(buf)
+}
 
 pub fn pixelate(img: &DynamicImage, block_size: u32) -> DynamicImage {
     let (width, height) = img.dimensions();
