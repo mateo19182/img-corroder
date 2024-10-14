@@ -1,0 +1,77 @@
+{
+  "transformations": [
+    {
+      "name": "grayscale",
+      "params": {}
+    },
+    {
+      "name": "invert",
+      "params": {}
+    },
+    {
+      "name": "blur",
+      "params": {
+        "sigma": 2.5
+      }
+    },
+    {
+      "name": "pixelate",
+      "params": {
+        "block_size": 15
+      }
+    },
+    {
+      "name": "oil_painting",
+      "params": {
+        "radius": 5,
+        "intensity": 35
+      }
+    },
+    {
+      "name": "glitch",
+      "params": {
+        "amount": 60,
+        "max_offset": 12,
+        "direction": "vertical",
+        "noisy": true
+      }
+    },
+    {
+      "name": "sort",
+      "params": {
+        "mode": "brightness",
+        "direction": "both",
+        "threshold": 55
+      }
+    },
+    {
+      "name": "rotate",
+      "params": {
+        "angle": 90
+      }
+    },
+    {
+      "name": "desync",
+      "params": {
+        "x_shift": 15,
+        "y_shift": -8
+      }
+    },
+    {
+      "name": "wind",
+      "params": {
+        "direction": "right",
+        "strength": 12
+      }
+    },
+    {
+      "name": "scan-lines",
+      "params": {
+        "line_thickness": 3,
+        "line_spacing": 12,
+        "opacity": 0.2,
+        "angle": 15.0
+      }
+    }
+  ]
+}
