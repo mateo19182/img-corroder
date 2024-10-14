@@ -253,7 +253,7 @@ pub fn glitch(
     }
 
     println!(
-        "Applied enhanced glitch with num_glitches: {}, max_offset: {}, direction: {}, noisy: {}",
+        "Applied glitch with num_glitches: {}, max_offset: {}, direction: {}, noisy: {}",
         num_glitches, max_offset, direction, noisy
     );
     output

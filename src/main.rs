@@ -51,13 +51,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -> Result<image::DynamicImage, Box<dyn std::error::Error>> {
     match transform.name.as_str() {
+        "grayscale" => {
+            print!("Grayscaled image\n");
+            Ok(img.grayscale())
+        },
         "invert" => {
             let mut inverted = img;
             inverted.invert();
+            print!("Inverted image\n");
             Ok(inverted)
         },
         "blur" => {
             let sigma = transform.params["sigma"].as_f64().unwrap_or(2.0) as f32;
+            print!("Blurred image with sigma {}\n", sigma);
             Ok(img.blur(sigma))
         },
         "pixelate" => {
@@ -103,7 +109,7 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
             let angle = transform.params["angle"].as_f64().unwrap_or(0.0) as f32;
             Ok(fx::scan_lines(&img, Some(line_thickness), Some(line_spacing), Some(angle), Some(opacity))?)
         },
-        "grayscale" => Ok(img.grayscale()),
+
         _ => Err("Invalid transformation specified".into()),
     }
 }

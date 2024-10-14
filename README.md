@@ -58,18 +58,10 @@ Build your own effect pipeline by following the example provided in `example_fx/
   - `opacity` (f64): Opacity of scan lines. Default is 0.5.
   - `angle` (f64): Angle of scan lines. Default is 0.0.
 
-## Usage Notes
-
-- All numeric parameters are optional and have default values as specified above.
-- String parameters (like `direction` in the `wind` filter) may have specific allowed values. Refer to the implementation for details.
-- Boolean parameters (like `noisy` in the `glitch` filter) default to `false` if not specified.
-- Some filters (like `grayscale` and `invert`) don't require any parameters.
-
 For more detailed information on each filter and its implementation, please refer to the source code.
 
 ## References
 
 - [PPG](https://github.com/tmick0/ppg): Applies transforms to actual decoded images, then introduces errors to the transformed data before reversing the transform to obtain an altered image. More information about the philosophy behind PPG can be found [here](https://lo.calho.st/posts/image-glitching/).
 - [glitch_png](https://github.com/KernelEquinox/glitch_png)
-- [glitch](https://github.com/strangeglyph/glitch): Classic desync.
 - [Rust-Wasm-Image-Glitch](https://github.com/felixfaire/Rust-Wasm-Image-Glitch): Cool ones.
