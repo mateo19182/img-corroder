@@ -8,25 +8,64 @@ A pipeline based image processing tool written in Rust for creating glitch effec
 cargo run -- -i img.jpg -o output.jpg -c example_fx/pipe.json
 ```
 
-## Included Effects
-
-- **grayscale**: No parameters.
-- **invert**: No parameters.
-- **blur**:
-  - `sigma` (f64): Standard deviation of the Gaussian blur. Default is 2.0.
-- **pixelate**:
-  - `block_size` (u32): Size of the pixel blocks. Default is 10.
-- **oil_painting**:
-  - `radius` (u32): Radius of the effect. Default is 4.
-  - `intensity` (u32): Intensity of the effect. Default is 30.
-- **glitch**:
-  - `amount` (u32): Amount of glitch effect. Default is 50.
-  - `seed` (u32): Seed for random number generator. Default is 10.
-- **sort**: No parameters.
-
 ## Custom Pipelines
 
 Build your own effect pipeline by following the example provided in `example_fx/pipe.json`.
+
+## Filters and Parameters
+
+- **grayscale**
+  - No parameters.
+
+- **invert**
+  - No parameters.
+
+- **blur**
+  - `sigma` (f64): Standard deviation of the Gaussian blur. Default is 2.0.
+
+- **pixelate**
+  - `block_size` (u64): Size of the pixelation blocks. Default is 10.
+
+- **oil_painting**
+  - `radius` (u64): Radius of the effect. Default is 4.
+  - `intensity` (u64): Intensity of the effect. Default is 30.
+
+- **glitch**
+  - `amount` (u64): Amount of glitch effect. Default is 50.
+  - `max_offset` (u64): Maximum offset for glitch displacement. Default is 10.
+  - `direction` (String): Direction of the glitch effect. Options are "vertical", "horizontal".
+  - `noisy` (bool): Whether to add noisy pixels. Default is false.
+
+- **sort**
+  - `mode` (String): Sorting mode.
+  - `direction` (String): Sorting direction. Options are "row", "column", "both"
+  - `threshold` (u64): Threshold for sorting. Default is 50.
+
+- **rotate**
+  - `angle` (u64): Rotation angle in degrees. Default is 90.
+
+- **desync**
+  - `x_shift` (i64): Horizontal shift. Default is 10.
+  - `y_shift` (i64): Vertical shift. Default is 10.
+
+- **wind**
+  - `direction` (String): Direction of the wind effect. Options are "right", "left", "up", "down"
+  - `strength` (u64): Strength of the wind effect. Default is 10.
+
+- **scan-lines**
+  - `line_thickness` (u64): Thickness of scan lines. Default is 2.
+  - `line_spacing` (u64): Spacing between scan lines. Default is 10.
+  - `opacity` (f64): Opacity of scan lines. Default is 0.5.
+  - `angle` (f64): Angle of scan lines. Default is 0.0.
+
+## Usage Notes
+
+- All numeric parameters are optional and have default values as specified above.
+- String parameters (like `direction` in the `wind` filter) may have specific allowed values. Refer to the implementation for details.
+- Boolean parameters (like `noisy` in the `glitch` filter) default to `false` if not specified.
+- Some filters (like `grayscale` and `invert`) don't require any parameters.
+
+For more detailed information on each filter and its implementation, please refer to the source code.
 
 ## References
 

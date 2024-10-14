@@ -51,7 +51,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -> Result<image::DynamicImage, Box<dyn std::error::Error>> {
     match transform.name.as_str() {
-        "grayscale" => Ok(img.grayscale()),
         "invert" => {
             let mut inverted = img;
             inverted.invert();
@@ -72,10 +71,39 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
         },
         "glitch" => {
             let amount = transform.params["amount"].as_u64().unwrap_or(50) as u32;
-            let seed = transform.params["seed"].as_u64().unwrap_or(10) as u32;
-            Ok(fx::glitch(&img, amount, seed.try_into().unwrap()))
+            let max_offset = transform.params["max_offset"].as_u64().unwrap_or(10) as i32;
+            let direction: String = transform.params["direction"].to_string();
+            let noisy_pixels: bool = transform.params["noisy"].as_bool().unwrap_or(false);
+            Ok(fx::glitch(&img, amount, max_offset, &direction, noisy_pixels))
         },
-        "sort" => Ok(fx::sort_pixel(&img)),
+        "sort" => {
+            let mode: String = transform.params["mode"].to_string();
+            let direction: String = transform.params["direction"].to_string();
+            let threshold = transform.params.get("threshold").and_then(|v| v.as_u64()).unwrap_or(50) as u8;
+            Ok(fx::sort_pixel(&img, &mode, &direction, Some(threshold)))
+        },
+        "rotate" => {
+            let angle = transform.params["angle"].as_u64().unwrap_or(90) as f32;
+            Ok(fx::rotate(&img, angle)?)
+        },
+        "desync" => {
+            let x_shift = transform.params["x_shift"].as_i64().unwrap_or(10) as i32;
+            let y_shift = transform.params["y_shift"].as_i64().unwrap_or(10) as i32;
+            Ok(fx::desync(&img, x_shift, y_shift)?)
+        },
+        "wind" => {
+            let direction = transform.params["direction"].as_str().unwrap_or("right").to_string();
+            let strength: u32 = transform.params["strength"].as_u64().unwrap_or(10) as u32;
+            Ok(fx::wind(&img, &direction, strength)?)
+        },
+        "scan-lines" => {
+            let line_thickness = transform.params["line_thickness"].as_u64().unwrap_or(2) as u32;
+            let line_spacing = transform.params["line_spacing"].as_u64().unwrap_or(10) as u32;
+            let opacity = transform.params["opacity"].as_f64().unwrap_or(0.5) as f32;
+            let angle = transform.params["angle"].as_f64().unwrap_or(0.0) as f32;
+            Ok(fx::scan_lines(&img, Some(line_thickness), Some(line_spacing), Some(angle), Some(opacity))?)
+        },
+        "grayscale" => Ok(img.grayscale()),
         _ => Err("Invalid transformation specified".into()),
     }
 }
