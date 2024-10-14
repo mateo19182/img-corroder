@@ -22,6 +22,7 @@ pub fn sort_pixel(img: &DynamicImage) -> DynamicImage {
     DynamicImage::ImageRgb8(buf)
 }
 
+
 pub fn pixelate(img: &DynamicImage, block_size: u32) -> DynamicImage {
     let (width, height) = img.dimensions();
     let mut output = DynamicImage::new_rgba8(width, height);
