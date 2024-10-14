@@ -1,0 +1,22 @@
+{
+    "transformations": [
+      {
+        "name": "glitch",
+        "params": {
+          "amount": 0,
+          "max_offset": 12,
+          "direction": "vertical",
+          "noisy": false
+        }
+      },
+      {
+        "name": "pixel-sort",
+        "params": {
+          "direction": "both",
+          "low-threshold": 150,
+          "high-threshold": 200,
+          "window_size": 0
+        }
+      }
+    ]
+  }

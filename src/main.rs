@@ -88,11 +88,12 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
             let noisy_pixels: bool = transform.params["noisy"].as_bool().unwrap_or(false);
             Ok(fx::glitch(&img, amount, max_offset, &direction, noisy_pixels))
         },
-        "sort" => {
-            let mode: String = transform.params["mode"].to_string();
+        "pixel-sort" => {
+            let low_threshold: u8 = transform.params.get("low-threshold").and_then(|v| v.as_u64()).unwrap_or(0) as u8;
+            let high_threshold: u8 = transform.params.get("high-threshold").and_then(|v| v.as_u64()).unwrap_or(0) as u8;
             let direction: String = transform.params["direction"].to_string();
-            let threshold = transform.params.get("threshold").and_then(|v| v.as_u64()).unwrap_or(50) as u8;
-            Ok(fx::sort_pixel(&img, &mode, &direction, Some(threshold)))
+            let window_size: usize = transform.params.get("window_size").and_then(|v| v.as_u64()).unwrap_or(0) as usize;
+            Ok(fx::pixel_sort(&img, &direction, low_threshold,high_threshold,  window_size))
         },
         "rotate" => {
             let angle = transform.params["angle"].as_u64().unwrap_or(90) as f32;

@@ -1,47 +1,78 @@
 
-use image::{DynamicImage, GenericImage, GenericImageView, RgbImage, Rgba, RgbaImage};
+use image::{DynamicImage, GenericImage, GenericImageView, ImageBuffer, Pixel, Rgb, Rgba, RgbaImage};
 use rand::Rng;
-use asdf_pixel_sort::{sort_with_options, PColor, Options, Mode, Direction};
 
-pub fn sort_pixel(img: &DynamicImage, mode: &String, direction: &String, threshold: Option<u8>) -> DynamicImage {
-    // Convert the DynamicImage to an RgbImage
-    let mut buf: RgbImage = img.to_rgb8();
+pub fn pixel_sort(img: &DynamicImage, direction: &str, low_threshold:u8, high_threshold:u8, window_size:usize) -> DynamicImage {
+    let (width, height) = img.dimensions();
+    let mut output = ImageBuffer::new(width, height);
+    let clean_direction = direction.trim().trim_matches('"').to_lowercase();
 
-    // Define a default color and use the provided color if available
-    let (r, g, b) = (0, 62, 214);
-    let pcolor = PColor::new(r, g, b);
-
-    // Remove surrounding quotes and whitespace, then convert to lowercase
-    let clean_mode = mode.trim().trim_matches('"').to_lowercase();
-    let clean_direction: String = direction.trim().trim_matches('"').to_lowercase();
-
-    let options = Options {
-        mode: match clean_mode.as_str() {
-            "black" => Mode::Black(pcolor),
-            "white" => Mode::White(pcolor),
-            "brightness" => Mode::Brightness(threshold.unwrap_or(50)),
-            _ => {
-                println!("Unrecognized mode: {}, defaulting to black", clean_mode);
-                Mode::Black(pcolor)
-            },
+    match clean_direction.as_str() { "row" => sort_pixels(img, &mut output, low_threshold, high_threshold,  window_size),
+        "column" => {
+            let rotated = img.rotate90();
+            let mut rotated_output = ImageBuffer::new(height, width);
+            sort_pixels(&rotated, &mut rotated_output, low_threshold, high_threshold, window_size);
+            output = DynamicImage::ImageRgb8(rotated_output).rotate270().to_rgb8();
         },
-        direction: match clean_direction.as_str() {
-            "row" => Direction::Row,
-            "column" => Direction::Column,
-            "both" => Direction::Both,
-            _ => {
-                println!("Unrecognized direction: {}, defaulting to both", clean_direction);
-                Direction::Both
-            },
+        "both" => {
+            sort_pixels(img, &mut output, low_threshold, high_threshold, window_size);
+            let temp = DynamicImage::ImageRgb8(output);
+            let rotated = temp.rotate90();
+            let mut rotated_output = ImageBuffer::new(height, width);
+            sort_pixels(&rotated, &mut rotated_output, low_threshold, high_threshold, window_size);
+            output = DynamicImage::ImageRgb8(rotated_output).rotate270().to_rgb8();
         },
-    };
+        _ => {
+            println!("Unrecognized direction: {}, defaulting to row", direction);
+            sort_pixels(img, &mut output, low_threshold, high_threshold, window_size);
+        }
+    }
 
-    // Apply the sort_with_options function
-    sort_with_options(&mut buf, &options);
-    print!("Applied sort_pixel with options: {:?}", options);
+    print!("Applied simple_sort with direction: {}, low_theshold: {}, high_threshold {}, window_size: {}, ", direction, low_threshold, high_threshold, window_size);
+    DynamicImage::ImageRgb8(output)
+}
 
-    // Convert the buffer back to a DynamicImage and return it
-    DynamicImage::ImageRgb8(buf)
+fn sort_pixels(img: &DynamicImage, output: &mut ImageBuffer<Rgb<u8>, Vec<u8>>, low_threshold:u8, high_threshold:u8, window_size:usize) {
+
+    for y in 0..img.height() {
+        let mut row: Vec<(u8, Rgb<u8>)> = (0..img.width())
+            .map(|x| {
+                let pixel = img.get_pixel(x, y).to_rgb();
+                let brightness = ((pixel[0] as u32 + pixel[1] as u32 + pixel[2] as u32) / 3) as u8;
+                (brightness, pixel)
+            })
+            .collect();
+
+        if window_size == 0 || window_size >= img.width().try_into().unwrap() {
+            // Sort the entire row
+            row.sort_by_key(|&(brightness, _)| {
+                if brightness > low_threshold && brightness < high_threshold {
+                    brightness
+                } else {
+                    0
+                }
+            });
+        } else {
+            // Window-based sorting
+            let mut sorted_row = Vec::new();
+            for chunk in row.chunks(window_size as usize) {
+                let mut window_vec = chunk.to_vec();
+                window_vec.sort_by_key(|&(brightness, _)| {
+                    if brightness > low_threshold && brightness < high_threshold {
+                        brightness
+                    } else {
+                        0
+                    }
+                });
+                sorted_row.extend(window_vec);
+            }
+            row = sorted_row;
+        }
+
+        for (x, &(_, pixel)) in row.iter().enumerate() {
+            output.put_pixel(x as u32, y, pixel);
+        }
+    }
 }
 
 pub fn rotate(img: &DynamicImage, angle: f32) -> Result<DynamicImage, String> {

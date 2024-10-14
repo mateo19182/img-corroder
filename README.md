@@ -12,13 +12,17 @@ cargo run -- -i img.jpg -o output.jpg -c examples/all.json
 
 Build your own effect pipeline by following the example provided in `example_fx/pipe.json`.
 
+## TODO
+
+- ASCII filter
+- actually implement pixel sort
+- edge stuff
+
 ## Filters and Parameters
 
 - **grayscale**
-  - No parameters.
 
 - **invert**
-  - No parameters.
 
 - **blur**
   - `sigma` (f64): Standard deviation of the Gaussian blur. Default is 2.0.
@@ -36,10 +40,12 @@ Build your own effect pipeline by following the example provided in `example_fx/
   - `direction` (String): Direction of the glitch effect. Options are "vertical", "horizontal".
   - `noisy` (bool): Whether to add noisy pixels. Default is false.
 
-- **sort**
+- **pixel_sort**
   - `mode` (String): Sorting mode.
   - `direction` (String): Sorting direction. Options are "row", "column", "both"
-  - `threshold` (u64): Threshold for sorting. Default is 50.
+  - `low_threshold` (u64): Threshold for sorting. Default is 0.
+  - `high_threshold` (u64): Threshold for sorting. Default is 0.
+  - if low_threshold => high_threshold, no sorting will be made
 
 - **rotate**
   - `angle` (u64): Rotation angle in degrees. Default is 90.
