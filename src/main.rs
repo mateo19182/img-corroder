@@ -3,7 +3,8 @@ use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
 use std::time::Instant;
-mod fx;
+mod colorfx;
+mod glitchfx;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -67,6 +68,51 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
             print!("Inverted image");
             Ok(inverted)
         },
+        "brightness" => {
+            let factor = transform.params["factor"].as_f64().unwrap_or(1.0) as f32;
+            print!("Adjusted brightness with factor {}", factor);
+            Ok(colorfx::brightness(&img, factor)?)
+        },
+        "sepia" => {
+            print!("Applied sepia filter");
+            Ok(colorfx::sepia(&img)?)
+        },
+        "contrast" => {
+            let factor = transform.params["factor"].as_f64().unwrap_or(1.0) as f32;
+            print!("Adjusted contrast with factor {}", factor);
+            Ok(colorfx::contrast(&img, factor)?)
+        },
+        "saturation" => {
+            let factor = transform.params["factor"].as_f64().unwrap_or(1.0) as f32;
+            print!("Adjusted saturation with factor {}", factor);
+            colorfx::saturation(&img, factor).map_err(|e| e.into())
+        },
+        "add_noise" => {
+            let intensity = transform.params["intensity"].as_f64().unwrap_or(0.1) as f32;
+            print!("Applied noise with intensity {}", intensity);
+            Ok(colorfx::add_noise(&img, intensity)?)
+        },
+        "deepfry" => {
+            let factor = transform.params["factor"].as_f64().unwrap_or(1.0) as f32;
+            print!("Deepfried image with factor {}", factor);
+            Ok(colorfx::deep_fry(&img)?)
+        },
+        "hue_rotate" => {
+            let angle = transform.params["angle"].as_f64().unwrap_or(90.0) as f32;
+            print!("Rotated hue by {}", angle);
+            Ok(colorfx::hue_rotate(&img, angle)?)
+        },
+        "color_replacer" => {
+            let target_color: String = transform.params["target_color"].to_string();
+            let replacement_color: String = transform.params["replacement_color"].to_string();
+            let tolerance: u8 = transform.params.get("tolerance").and_then(|v| v.as_u64()).unwrap_or(50) as u8;
+            print!("Replaced color {} with {} with tolerance {}", target_color, replacement_color, tolerance);
+            Ok(colorfx::color_replacer(&img, &target_color, &replacement_color, tolerance)?)
+        },
+        "vaporwave" => {
+            print!("Applied vaporwave aesthetic filter");
+            Ok(colorfx::vaporwave(&img)?)
+        },
         "blur" => {
             let sigma = transform.params["sigma"].as_f64().unwrap_or(2.0) as f32;
             print!("Blurred image with sigma {}", sigma);
@@ -74,47 +120,47 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
         },
         "pixelate" => {
             let block_size = transform.params["block_size"].as_u64().unwrap_or(10) as u32;
-            Ok(fx::pixelate(&img, block_size))
+            Ok(glitchfx::pixelate(&img, block_size))
         },
         "oil_painting" => {
             let radius = transform.params["radius"].as_u64().unwrap_or(4) as u32;
             let intensity = transform.params["intensity"].as_u64().unwrap_or(30) as u32;
-            Ok(fx::oil_painting(&img, radius, intensity.try_into().unwrap()))
+            Ok(glitchfx::oil_painting(&img, radius, intensity.try_into().unwrap()))
         },
         "glitch" => {
             let amount = transform.params["amount"].as_u64().unwrap_or(50) as u32;
             let max_offset = transform.params["max_offset"].as_u64().unwrap_or(10) as i32;
             let direction: String = transform.params["direction"].to_string();
             let noisy_pixels: bool = transform.params["noisy"].as_bool().unwrap_or(false);
-            Ok(fx::glitch(&img, amount, max_offset, &direction, noisy_pixels))
+            Ok(glitchfx::glitch(&img, amount, max_offset, &direction, noisy_pixels))
         },
         "pixel-sort" => {
             let low_threshold: u8 = transform.params.get("low-threshold").and_then(|v| v.as_u64()).unwrap_or(0) as u8;
             let high_threshold: u8 = transform.params.get("high-threshold").and_then(|v| v.as_u64()).unwrap_or(0) as u8;
             let direction: String = transform.params["direction"].to_string();
             let window_size: usize = transform.params.get("window_size").and_then(|v| v.as_u64()).unwrap_or(0) as usize;
-            Ok(fx::pixel_sort(&img, &direction, low_threshold,high_threshold,  window_size))
+            Ok(glitchfx::pixel_sort(&img, &direction, low_threshold,high_threshold,  window_size))
         },
         "rotate" => {
             let angle = transform.params["angle"].as_u64().unwrap_or(90) as f32;
-            Ok(fx::rotate(&img, angle)?)
+            Ok(glitchfx::rotate(&img, angle)?)
         },
         "desync" => {
             let x_shift = transform.params["x_shift"].as_i64().unwrap_or(10) as i32;
             let y_shift = transform.params["y_shift"].as_i64().unwrap_or(10) as i32;
-            Ok(fx::desync(&img, x_shift, y_shift)?)
+            Ok(glitchfx::desync(&img, x_shift, y_shift)?)
         },
         "wind" => {
             let direction = transform.params["direction"].as_str().unwrap_or("right").to_string();
             let strength: u32 = transform.params["strength"].as_u64().unwrap_or(10) as u32;
-            Ok(fx::wind(&img, &direction, strength)?)
+            Ok(glitchfx::wind(&img, &direction, strength)?)
         },
         "scan-lines" => {
             let line_thickness = transform.params["line_thickness"].as_u64().unwrap_or(2) as u32;
             let line_spacing = transform.params["line_spacing"].as_u64().unwrap_or(10) as u32;
             let opacity = transform.params["opacity"].as_f64().unwrap_or(0.5) as f32;
             let angle = transform.params["angle"].as_f64().unwrap_or(0.0) as f32;
-            Ok(fx::scan_lines(&img, Some(line_thickness), Some(line_spacing), Some(angle), Some(opacity))?)
+            Ok(glitchfx::scan_lines(&img, Some(line_thickness), Some(line_spacing), Some(angle), Some(opacity))?)
         },
         _ => Err("Invalid transformation specified".into()),
     }

@@ -15,8 +15,11 @@ Build your own effect pipeline by following the example provided in `example_fx/
 ## TODO
 
 - ASCII filter
-- actually implement pixel sort
 - edge stuff
+- SAM
+  - <https://crates.io/crates/usls>
+- depth perception
+  - <https://github.com/rozgo/monodepth-rs>
 
 ## Filters and Parameters
 

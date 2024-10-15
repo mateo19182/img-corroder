@@ -32,7 +32,7 @@ pub fn pixel_sort(img: &DynamicImage, direction: &str, low_threshold:u8, high_th
     DynamicImage::ImageRgb8(output)
 }
 
-fn sort_pixels(img: &DynamicImage, output: &mut ImageBuffer<Rgb<u8>, Vec<u8>>, low_threshold:u8, high_threshold:u8, window_size:usize) {
+pub fn sort_pixels(img: &DynamicImage, output: &mut ImageBuffer<Rgb<u8>, Vec<u8>>, low_threshold:u8, high_threshold:u8, window_size:usize) {
 
     for y in 0..img.height() {
         let mut row: Vec<(u8, Rgb<u8>)> = (0..img.width())
@@ -212,15 +212,8 @@ pub fn oil_painting(img: &DynamicImage, radius: u32, intensity_levels: u8) -> Dy
     output
 }
 
-pub fn scan_lines(
-    img: &DynamicImage,
-    line_thickness: Option<u32>,
-    line_spacing: Option<u32>,
-    angle: Option<f32>,
-    opacity: Option<f32>,
-) -> Result<DynamicImage, String> {
+pub fn scan_lines(img: &DynamicImage,line_thickness: Option<u32>,line_spacing: Option<u32>,angle: Option<f32>,opacity: Option<f32>) -> Result<DynamicImage, String> {
     let mut rng = rand::thread_rng();
-
     // Use provided values or generate random defaults
     let thickness = line_thickness.unwrap_or_else(|| rng.gen_range(1..=5));
     let spacing = line_spacing.unwrap_or_else(|| rng.gen_range(5..=20));
@@ -256,13 +249,7 @@ pub fn scan_lines(
     Ok(DynamicImage::ImageRgba8(output))
 }
 
-pub fn glitch(
-    img: &DynamicImage,
-    num_glitches: u32,
-    max_offset: i32,
-    direction: &str,
-    noisy: bool,
-) -> DynamicImage {
+pub fn glitch(img: &DynamicImage, num_glitches: u32, max_offset: i32,direction: &str, noisy: bool) -> DynamicImage {
     let (width, height) = img.dimensions();
     let mut output = img.clone();
     let mut rng: rand::prelude::ThreadRng = rand::thread_rng();
@@ -287,16 +274,7 @@ pub fn glitch(
     output
 }
 
-fn apply_vertical_glitch(
-    output: &mut DynamicImage,
-    img: &DynamicImage,
-    x: u32,
-    glitch_width: u32,
-    offset: i32,
-    width: u32,
-    height: u32,
-    noisy: bool,
-) {
+pub fn apply_vertical_glitch(output: &mut DynamicImage, img: &DynamicImage, x: u32, glitch_width: u32, offset: i32, width: u32, height: u32, noisy: bool) {
     for dx in x..x + glitch_width {
         if dx < width {
             for y in 0..height {
@@ -311,16 +289,7 @@ fn apply_vertical_glitch(
     }
 }
 
-fn apply_horizontal_glitch(
-    output: &mut DynamicImage,
-    img: &DynamicImage,
-    y: u32,
-    glitch_height: u32,
-    offset: i32,
-    width: u32,
-    height: u32,
-    noisy: bool,
-) {
+pub fn apply_horizontal_glitch( output: &mut DynamicImage, img: &DynamicImage, y: u32, glitch_height: u32, offset: i32, width: u32, height: u32, noisy: bool) {
     for dy in y..y + glitch_height {
         if dy < height {
             for x in 0..width {
@@ -335,7 +304,7 @@ fn apply_horizontal_glitch(
     }
 }
 
-fn noisy_pixels(_pixel: Rgba<u8>) -> Rgba<u8> {
+pub fn noisy_pixels(_pixel: Rgba<u8>) -> Rgba<u8> {
     let mut rng = rand::thread_rng();
     Rgba([
         rng.gen_range(0..=255),

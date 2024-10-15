@@ -252,7 +252,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "img-nuker"
+name = "img-corroder"
 version = "0.1.0"
 dependencies = [
  "asdf-pixel-sort",

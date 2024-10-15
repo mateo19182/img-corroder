@@ -3,7 +3,7 @@
       {
         "name": "glitch",
         "params": {
-          "amount": 0,
+          "amount": 100,
           "max_offset": 12,
           "direction": "vertical",
           "noisy": false
@@ -12,10 +12,35 @@
       {
         "name": "pixel-sort",
         "params": {
-          "direction": "both",
-          "low-threshold": 150,
+          "direction": "row",
+          "low-threshold": 170,
           "high-threshold": 200,
-          "window_size": 0
+          "window_size": 200
+        }
+      },
+      {
+        "name": "hue_rotate",
+        "params": {
+        }
+      },
+      {
+        "name": "deepfry",
+        "params": {
+        }
+      },
+      {
+        "name": "deepfry",
+        "params": {
+        }
+      },
+      {
+        "name": "deepfry",
+        "params": {
+        }
+      },
+      {
+        "name": "vaporwave",
+        "params": {
         }
       }
     ]

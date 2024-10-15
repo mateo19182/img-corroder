@@ -37,11 +37,10 @@
       }
     },
     {
-      "name": "sort",
+      "name": "pixel-sort",
       "params": {
-        "mode": "brightness",
-        "direction": "both",
-        "threshold": 55
+        "mode": "row",
+        "high-threshold": 55
       }
     },
     {
@@ -69,7 +68,7 @@
       "params": {
         "line_thickness": 3,
         "line_spacing": 12,
-        "opacity": 0.2,
+        "opacity": 0.1,
         "angle": 15.0
       }
     }
