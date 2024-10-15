@@ -5,7 +5,7 @@ A pipeline based image processing tool written in Rust for creating glitch effec
 ## Usage
 
 ```sh
-cargo run -- -i img.jpg -o output.jpg -c examples/all.json
+cargo run -- -i input-img.jpg -o output.jpg -c examples/all.json
 ```
 
 ## Custom Pipelines
@@ -21,53 +21,89 @@ Build your own effect pipeline by following the example provided in `example_fx/
 - depth perception
   - <https://github.com/rozgo/monodepth-rs>
 
-## Filters and Parameters
+## Image Filters and Parameters
 
-- **grayscale**
+Below is a list of available filters and their parameters:
 
-- **invert**
+- **Grayscale**
+  - No parameters
+  - Converts the image to grayscale
 
-- **blur**
-  - `sigma` (f64): Standard deviation of the Gaussian blur. Default is 2.0.
+- **Invert**
+  - No parameters
+  - Inverts the colors of the image
 
-- **pixelate**
-  - `block_size` (u64): Size of the pixelation blocks. Default is 10.
+- **Brightness**
+  - `factor` (float, default: 1.0): Adjusts the brightness of the image
 
-- **oil_painting**
-  - `radius` (u64): Radius of the effect. Default is 4.
-  - `intensity` (u64): Intensity of the effect. Default is 30.
+- **Sepia**
+  - No parameters
+  - Applies a sepia tone filter to the image
 
-- **glitch**
-  - `amount` (u64): Amount of glitch effect. Default is 50.
-  - `max_offset` (u64): Maximum offset for glitch displacement. Default is 10.
-  - `direction` (String): Direction of the glitch effect. Options are "vertical", "horizontal".
-  - `noisy` (bool): Whether to add noisy pixels. Default is false.
+- **Contrast**
+  - `factor` (float, default: 1.0): Adjusts the contrast of the image
 
-- **pixel_sort**
-  - `mode` (String): Sorting mode.
-  - `direction` (String): Sorting direction. Options are "row", "column", "both"
-  - `low_threshold` (u64): Threshold for sorting. Default is 0.
-  - `high_threshold` (u64): Threshold for sorting. Default is 0.
-  - if low_threshold => high_threshold, no sorting will be made
+- **Saturation**
+  - `factor` (float, default: 1.0): Adjusts the color saturation of the image
 
-- **rotate**
-  - `angle` (u64): Rotation angle in degrees. Default is 90.
+- **Add Noise**
+  - `intensity` (float, default: 0.1): Determines the intensity of noise added to the image
 
-- **desync**
-  - `x_shift` (i64): Horizontal shift. Default is 10.
-  - `y_shift` (i64): Vertical shift. Default is 10.
+- **Deepfry**
+  - `factor` (float, default: 1.0): Intensity of the deepfry effect
 
-- **wind**
-  - `direction` (String): Direction of the wind effect. Options are "right", "left", "up", "down"
-  - `strength` (u64): Strength of the wind effect. Default is 10.
+- **Hue Rotate**
+  - `angle` (float, default: 90.0): Angle of hue rotation in degrees
 
-- **scan-lines**
-  - `line_thickness` (u64): Thickness of scan lines. Default is 2.
-  - `line_spacing` (u64): Spacing between scan lines. Default is 10.
-  - `opacity` (f64): Opacity of scan lines. Default is 0.5.
-  - `angle` (f64): Angle of scan lines. Default is 0.0.
+- **Color Replacer**
+  - `target_color` (string): The color to be replaced
+  - `replacement_color` (string): The color to replace with
+  - `tolerance` (integer, default: 50): Color matching tolerance
 
-For more detailed information on each filter and its implementation, please refer to the source code.
+- **Vaporwave**
+  - No parameters
+  - Applies a vaporwave aesthetic filter to the image
+
+- **Blur**
+  - `sigma` (float, default: 2.0): Blur intensity
+
+- **Pixelate**
+  - `block_size` (integer, default: 10): Size of pixelation blocks
+
+- **Oil Painting**
+  - `radius` (integer, default: 4): Radius of the effect
+  - `intensity` (integer, default: 30): Intensity of the effect
+
+- **Glitch**
+  - `amount` (integer, default: 50): Amount of glitch effect
+  - `max_offset` (integer, default: 10): Maximum pixel offset
+  - `direction` (string): Direction of the glitch effect
+  - `noisy` (boolean, default: false): Adds noisy pixels to the glitch
+
+- **Pixel Sort**
+  - `low-threshold` (integer, default: 0): Lower threshold for pixel sorting
+  - `high-threshold` (integer, default: 0): Upper threshold for pixel sorting
+  - `direction` (string): Direction of pixel sorting
+  - `window_size` (integer, default: 0): Size of sorting window
+
+- **Rotate**
+  - `angle` (float, default: 90): Rotation angle in degrees
+
+- **Desync**
+  - `x_shift` (integer, default: 10): Horizontal shift amount
+  - `y_shift` (integer, default: 10): Vertical shift amount
+
+- **Wind**
+  - `direction` (string, default: "right"): Direction of the wind effect
+  - `strength` (integer, default: 10): Strength of the wind effect
+
+- **Scan Lines**
+  - `line_thickness` (integer, default: 2): Thickness of scan lines
+  - `line_spacing` (integer, default: 10): Spacing between scan lines
+  - `opacity` (float, default: 0.5): Opacity of scan lines
+  - `angle` (float, default: 0.0): Angle of scan lines
+
+Each filter can be applied to an image, and the parameters allow for fine-tuning of the effect. When using these filters, you can adjust the parameters to achieve the desired visual result. For more detailed information on each filter and its implementation, please refer to the source code.
 
 ## References
 
