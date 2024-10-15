@@ -12,14 +12,9 @@ cargo run -- -i input-img.jpg -o output.jpg -c examples/all.json
 
 Build your own effect pipeline by following the example provided in `example_fx/pipe.json`.
 
-## TODO
+## Example
 
-- ASCII filter
-- edge stuff
-- SAM
-  - <https://crates.io/crates/usls>
-- depth perception
-  - <https://github.com/rozgo/monodepth-rs>
+![Output Image](output.jpg)
 
 ## Image Filters and Parameters
 
@@ -104,6 +99,15 @@ Below is a list of available filters and their parameters:
   - `angle` (float, default: 0.0): Angle of scan lines
 
 Each filter can be applied to an image, and the parameters allow for fine-tuning of the effect. When using these filters, you can adjust the parameters to achieve the desired visual result. For more detailed information on each filter and its implementation, please refer to the source code.
+
+## TODO
+
+- ASCII filter
+- edge stuff
+- SAM
+  - <https://crates.io/crates/usls>
+- depth perception
+  - <https://github.com/rozgo/monodepth-rs>
 
 ## References
 
