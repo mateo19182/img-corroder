@@ -14,7 +14,7 @@ Build your own effect pipeline by following the example provided in `example_fx/
 
 ## Example
 
-![Output Image](output.jpg)
+![Output Image](examples/img.jpg)
 
 ## Image Filters and Parameters
 
@@ -98,12 +98,35 @@ Below is a list of available filters and their parameters:
   - `opacity` (float, default: 0.5): Opacity of scan lines
   - `angle` (float, default: 0.0): Angle of scan lines
 
-Each filter can be applied to an image, and the parameters allow for fine-tuning of the effect. When using these filters, you can adjust the parameters to achieve the desired visual result. For more detailed information on each filter and its implementation, please refer to the source code.
+  - **Neon Edge**
+    - `strength` (float, default: 1.0): Strength of the neon edge effect
+    - `color_shift` (float, default: 0.0): Amount of color shift
+    - `brightness` (float, default: 1.0): Brightness of the effect
+
+  - **Sketch**
+    - `intensity` (float, default: 10.0): Intensity of the sketch effect
+    - `contrast` (float, default: 1.0): Contrast adjustment
+    - `invert` (boolean, default: false): Invert the sketch colors
+
+  - **Emboss**
+    - `strength` (float, default: 100000.0): Strength of the emboss effect
+    - `angle` (float, default: 45.0): Angle of the emboss effect
+
+  - **Quantized Edge**
+    - `threshold` (float, default: 80.0): Threshold for edge detection
+    - `level` (integer, default: 1): Level of quantization
+
+  - **Extrusion Edge**
+    - `threshold` (float, default: 100.0): Threshold for edge detection
+    - `strength` (float, default: 2.0): Strength of the extrusion effect
+    - `depth` (integer, default: 15): Depth of the extrusion effect
+
+Each filter can be applied to an image, and the parameters allow for fine-tuning of the effect. For more detailed information on each filter and its implementation, please refer to the source code.
 
 ## TODO
 
+- automatic json generator
 - ASCII filter
-- edge stuff
 - SAM
   - <https://crates.io/crates/usls>
 - depth perception

@@ -1,46 +1,10 @@
 {
     "transformations": [
+
       {
-        "name": "glitch",
+        "name":"deepfry",
         "params": {
-          "amount": 100,
-          "max_offset": 12,
-          "direction": "vertical",
-          "noisy": false
-        }
-      },
-      {
-        "name": "pixel-sort",
-        "params": {
-          "direction": "row",
-          "low-threshold": 170,
-          "high-threshold": 200,
-          "window_size": 200
-        }
-      },
-      {
-        "name": "hue_rotate",
-        "params": {
-        }
-      },
-      {
-        "name": "deepfry",
-        "params": {
-        }
-      },
-      {
-        "name": "deepfry",
-        "params": {
-        }
-      },
-      {
-        "name": "deepfry",
-        "params": {
-        }
-      },
-      {
-        "name": "vaporwave",
-        "params": {
+          "factor": 4
         }
       }
     ]

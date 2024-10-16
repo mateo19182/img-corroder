@@ -31,9 +31,7 @@ pub fn pixel_sort(img: &DynamicImage, direction: &str, low_threshold:u8, high_th
     print!("Applied simple_sort with direction: {}, low_theshold: {}, high_threshold {}, window_size: {}, ", direction, low_threshold, high_threshold, window_size);
     DynamicImage::ImageRgb8(output)
 }
-
-pub fn sort_pixels(img: &DynamicImage, output: &mut ImageBuffer<Rgb<u8>, Vec<u8>>, low_threshold:u8, high_threshold:u8, window_size:usize) {
-
+pub fn sort_pixels(img: &DynamicImage, output: &mut ImageBuffer<Rgb<u8>, Vec<u8>>, low_threshold: u8, high_threshold: u8, window_size: usize) {
     for y in 0..img.height() {
         let mut row: Vec<(u8, Rgb<u8>)> = (0..img.width())
             .map(|x| {
@@ -46,22 +44,26 @@ pub fn sort_pixels(img: &DynamicImage, output: &mut ImageBuffer<Rgb<u8>, Vec<u8>
         if window_size == 0 || window_size >= img.width().try_into().unwrap() {
             // Sort the entire row
             row.sort_by_key(|&(brightness, _)| {
-                if brightness > low_threshold && brightness < high_threshold {
+                if brightness >= low_threshold && brightness <= high_threshold {
                     brightness
+                } else if brightness < low_threshold {
+                    low_threshold - 1 // Place below threshold pixels at the start
                 } else {
-                    0
+                    u8::MAX // Place above threshold pixels at the end
                 }
             });
         } else {
             // Window-based sorting
             let mut sorted_row = Vec::new();
-            for chunk in row.chunks(window_size as usize) {
+            for chunk in row.chunks(window_size) {
                 let mut window_vec = chunk.to_vec();
                 window_vec.sort_by_key(|&(brightness, _)| {
-                    if brightness > low_threshold && brightness < high_threshold {
+                    if brightness >= low_threshold && brightness <= high_threshold {
                         brightness
+                    } else if brightness < low_threshold {
+                        low_threshold - 1 // Place below threshold pixels at the start
                     } else {
-                        0
+                        u8::MAX // Place above threshold pixels at the end
                     }
                 });
                 sorted_row.extend(window_vec);

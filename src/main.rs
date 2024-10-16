@@ -5,6 +5,7 @@ use std::path::PathBuf;
 use std::time::Instant;
 mod colorfx;
 mod glitchfx;
+mod edgesfx;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -80,7 +81,7 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
         "contrast" => {
             let factor = transform.params["factor"].as_f64().unwrap_or(1.0) as f32;
             print!("Adjusted contrast with factor {}", factor);
-            Ok(colorfx::contrast(&img, factor)?)
+            Ok(colorfx::contrast(&img, factor))
         },
         "saturation" => {
             let factor = transform.params["factor"].as_f64().unwrap_or(1.0) as f32;
@@ -95,7 +96,7 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
         "deepfry" => {
             let factor = transform.params["factor"].as_f64().unwrap_or(1.0) as f32;
             print!("Deepfried image with factor {}", factor);
-            Ok(colorfx::deep_fry(&img)?)
+            Ok(colorfx::deep_fry(&img, factor)?)
         },
         "hue_rotate" => {
             let angle = transform.params["angle"].as_f64().unwrap_or(90.0) as f32;
@@ -112,6 +113,39 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
         "vaporwave" => {
             print!("Applied vaporwave aesthetic filter");
             Ok(colorfx::vaporwave(&img)?)
+        },
+        "neon_edge" => {
+            let strength = transform.params["strength"].as_f64().unwrap_or(1.0) as f32;
+            let color_shift = transform.params["color_shift"].as_f64().unwrap_or(0.0) as f32;
+            let brightness = transform.params["brightness"].as_f64().unwrap_or(1.0) as f32;
+            print!("Applied Neon Edge filter with strength: {}, color_shift: {}, brightness: {}", strength, color_shift, brightness);
+            Ok(edgesfx::neon_edge(&img, strength, color_shift, brightness)?)
+        },
+        "sketch" => {
+            let intensity = transform.params["intensity"].as_f64().unwrap_or(10.0) as f32;
+            let contrast = transform.params["contrast"].as_f64().unwrap_or(1.0) as f32;
+            let invert = transform.params["invert"].as_bool().unwrap_or(false);
+            print!("Applied Sketch filter with intensity: {}, contrast: {}, invert: {}", intensity, contrast, invert);
+            Ok(edgesfx::sketch(&img, intensity, contrast, invert)?)
+        },
+        "emboss" => {
+            print!("Applied emboss filter");
+            let strength = transform.params["strength"].as_f64().unwrap_or(100000.0) as f32;
+            let angle = transform.params["angle"].as_f64().unwrap_or(45.0) as f32;
+            Ok(edgesfx::emboss(&img, strength, angle)?)
+        },
+        "quantized_edge" => {
+            let threshold = transform.params["threshold"].as_u64().unwrap_or(80) as f32;
+            let level: u8 = transform.params["level"].as_u64().unwrap_or(1) as u8;
+            print!("Applied quantized edge filter with threshold {}", threshold);
+            Ok(edgesfx::quantized_edge(&img, level,threshold)?)
+        },
+        "extrusion_edge" => {
+            let threshold = transform.params["threshold"].as_u64().unwrap_or(100) as f32;
+            let strength = transform.params["strength"].as_f64().unwrap_or(2.0) as f32;
+            let depth = transform.params["depth"].as_u64().unwrap_or(15) as u32;
+            print!("Applied edge extrusion filter with strength: {}, angle: {}, threshold: {}", strength, depth, threshold);
+            Ok(edgesfx::edge_extrusion(&img, strength, depth, threshold)?)
         },
         "blur" => {
             let sigma = transform.params["sigma"].as_f64().unwrap_or(2.0) as f32;
@@ -135,10 +169,10 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
             Ok(glitchfx::glitch(&img, amount, max_offset, &direction, noisy_pixels))
         },
         "pixel-sort" => {
-            let low_threshold: u8 = transform.params.get("low-threshold").and_then(|v| v.as_u64()).unwrap_or(0) as u8;
-            let high_threshold: u8 = transform.params.get("high-threshold").and_then(|v| v.as_u64()).unwrap_or(0) as u8;
+            let low_threshold: u8 = transform.params.get("low-threshold").and_then(|v| v.as_u64()).unwrap_or(150) as u8;
+            let high_threshold: u8 = transform.params.get("high-threshold").and_then(|v| v.as_u64()).unwrap_or(200) as u8;
             let direction: String = transform.params["direction"].to_string();
-            let window_size: usize = transform.params.get("window_size").and_then(|v| v.as_u64()).unwrap_or(0) as usize;
+            let window_size: usize = transform.params.get("window_size").and_then(|v| v.as_u64()).unwrap_or(100) as usize;
             Ok(glitchfx::pixel_sort(&img, &direction, low_threshold,high_threshold,  window_size))
         },
         "rotate" => {
