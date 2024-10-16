@@ -26,7 +26,7 @@ Build your own effect pipeline by following the example provided in `example_fx/
 
 ## Examples
 
-```markdown
+```html
 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
   <img src="examples/input-img.jpg" alt="Input Image" style="width: 30%;">
   <img src="examples/img.jpg" alt="Output Image 1" style="width: 30%;">
