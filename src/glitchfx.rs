@@ -28,7 +28,6 @@ pub fn pixel_sort(img: &DynamicImage, direction: &str, low_threshold:u8, high_th
         }
     }
 
-    print!("Applied simple_sort with direction: {}, low_theshold: {}, high_threshold {}, window_size: {}, ", direction, low_threshold, high_threshold, window_size);
     DynamicImage::ImageRgb8(output)
 }
 pub fn sort_pixels(img: &DynamicImage, output: &mut ImageBuffer<Rgb<u8>, Vec<u8>>, low_threshold: u8, high_threshold: u8, window_size: usize) {
@@ -78,7 +77,6 @@ pub fn sort_pixels(img: &DynamicImage, output: &mut ImageBuffer<Rgb<u8>, Vec<u8>
 }
 
 pub fn rotate(img: &DynamicImage, angle: f32) -> Result<DynamicImage, String> {
-    print!("Applied rotate with angle: {}", angle);
 
     match angle.rem_euclid(360.0) {
         0.0 => Ok(img.clone()),
@@ -90,7 +88,6 @@ pub fn rotate(img: &DynamicImage, angle: f32) -> Result<DynamicImage, String> {
 }
 
 pub fn desync(img: &DynamicImage, x_shift: i32, y_shift: i32) -> Result<DynamicImage, String> {
-    print!("Applied desync with x_shift: {}, y_shift: {}", x_shift, y_shift);
 
     let (width, height) = img.dimensions();
     let mut output = RgbaImage::new(width, height);
@@ -118,7 +115,6 @@ pub fn desync(img: &DynamicImage, x_shift: i32, y_shift: i32) -> Result<DynamicI
 }
 
 pub fn wind(img: &DynamicImage, direction: &String, strength: u32) -> Result<DynamicImage, String> {
-    print!("Applied wind effect with direction: {:?}, strength: {}", direction, strength);
 
     let (width, height) = img.dimensions();
     let mut output = RgbaImage::new(width, height);
@@ -173,7 +169,6 @@ pub fn pixelate(img: &DynamicImage, block_size: u32) -> DynamicImage {
             }
         }
     }
-    print!("Applied pixelate with block_size: {}", block_size);
     output
 }
 
@@ -210,7 +205,6 @@ pub fn oil_painting(img: &DynamicImage, radius: u32, intensity_levels: u8) -> Dy
             output.put_pixel(x, y, Rgba([r, g, b, 255]));
         }
     }
-    print!("Applied oil_painting with radius: {}, intensity_levels: {}", radius, intensity_levels);
     output
 }
 
@@ -221,9 +215,6 @@ pub fn scan_lines(img: &DynamicImage,line_thickness: Option<u32>,line_spacing: O
     let spacing = line_spacing.unwrap_or_else(|| rng.gen_range(5..=20));
     let angle_rad = angle.unwrap_or_else(|| rng.gen_range(0.0..std::f32::consts::PI));
     let opacity = opacity.unwrap_or_else(|| rng.gen_range(0.3..=0.7));
-
-    print!("Applied scan lines with thickness: {}, spacing: {}, angle: {:.2}rad, opacity: {:.2}", 
-             thickness, spacing, angle_rad, opacity);
 
     let (width, height) = img.dimensions();
     let mut output = img.to_rgba8();
@@ -272,7 +263,6 @@ pub fn glitch(img: &DynamicImage, num_glitches: u32, max_offset: i32,direction: 
         }
     }
 
-    print!("Applied glitch with num_glitches: {}, max_offset: {}, direction: {}, noisy: {}", num_glitches, max_offset, direction, noisy);
     output
 }
 

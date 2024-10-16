@@ -29,7 +29,6 @@ fn convolve(img: &DynamicImage, kernel: &[[f32; 3]; 3]) -> DynamicImage {
 }
 
 pub fn neon_edge(img: &DynamicImage, strength: f32, color_shift: f32, brightness: f32) -> Result<DynamicImage, String> {
-    println!("Applying Neon Edge filter with strength: {}, color_shift: {}, brightness: {}", strength, color_shift, brightness);
     
     let sobel_x = [[-1.0, 0.0, 1.0], [-2.0, 0.0, 2.0], [-1.0, 0.0, 1.0]];
     let sobel_y = [[-1.0, -2.0, -1.0], [0.0, 0.0, 0.0], [1.0, 2.0, 1.0]];
@@ -63,7 +62,6 @@ pub fn neon_edge(img: &DynamicImage, strength: f32, color_shift: f32, brightness
 }
 
 pub fn sketch(img: &DynamicImage, intensity: f32, contrast: f32, invert: bool) -> Result<DynamicImage, String> {
-    println!("Applying Sketch filter with intensity: {}, contrast: {}, invert: {}", intensity, contrast, invert);
     
     let laplacian = [[0.0, 1.0, 0.0], [1.0, -4.0, 1.0], [0.0, 1.0, 0.0]];
 
@@ -94,7 +92,6 @@ pub fn sketch(img: &DynamicImage, intensity: f32, contrast: f32, invert: bool) -
 }
 
 pub fn emboss(img: &DynamicImage, strength: f32, angle: f32) -> Result<DynamicImage, String> {
-    println!("Applying emboss filter with strength {} and angle {}", strength, angle);
 
     // Calculate kernel based on angle and strength
     let (dx, dy) = angle.to_radians().sin_cos();
@@ -119,13 +116,13 @@ pub fn emboss(img: &DynamicImage, strength: f32, angle: f32) -> Result<DynamicIm
 }
 
 pub fn quantized_edge(img: &DynamicImage, levels: u8, threshold: f32) -> Result<DynamicImage, String> {
-    println!("Applying quantized edge filter with {} levels and threshold {}", levels, threshold);
 
     let edge_img = canny_edge_detection(img, threshold);
     let quantized = quantize_image(&edge_img, levels);
 
     Ok(DynamicImage::ImageRgb8(quantized))
 }
+
 pub fn canny_edge_detection(img: &DynamicImage, threshold: f32) -> ImageBuffer<Luma<u8>, Vec<u8>> {
     // Step 1: Noise reduction (Gaussian blur)
     let gaussian_kernel = [
@@ -191,7 +188,6 @@ fn quantize_image(img: &ImageBuffer<Luma<u8>, Vec<u8>>, levels: u8) -> ImageBuff
 }
 
 pub fn edge_extrusion(img: &DynamicImage, strength: f32, depth: u32, threshold: f32) -> Result<DynamicImage, String> {
-    println!("Applying edge extrusion filter with strength {}, depth {}, and threshold {}", strength, depth, threshold);
 
     let edges = canny_edge_detection(img, threshold);
     let extruded = extrude_edges(&edges, &img.to_rgba8(), strength, depth);

@@ -5,16 +5,35 @@ A pipeline based image processing tool written in Rust for creating glitch effec
 ## Usage
 
 ```sh
-cargo run -- -i input-img.jpg -o output.jpg -c examples/all.json
+cargo run -- -i examples/input-img.jpg -o output.jpg -c 10
 ```
+
+## Command-Line Interface
+
+The following options are available:
+
+- `-i, --input <FILE>`: Input image file
+- `-o, --output <FILE>`: Output image file
+- `-c, --config <FILE>`: Pipeline configuration file
+  - if a number is provided, a pipeline with a that number of effects and random parameters will be created.
+- `-h, --help`: Print help information
+
+You can use the command-line interface to apply a pipeline configuration to an image or apply individual filters to the image. The pipeline configuration file specifies the sequence of filters to apply, while the `-f` and `-p` options allow you to apply a single filter with custom parameters.
 
 ## Custom Pipelines
 
 Build your own effect pipeline by following the example provided in `example_fx/pipe.json`.
 
-## Example
+## Examples
 
-![Output Image](examples/img.jpg)
+```markdown
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  <img src="examples/input-img.jpg" alt="Input Image" style="width: 30%;">
+  <img src="examples/img.jpg" alt="Output Image 1" style="width: 30%;">
+  <img src="examples/img2.jpg" alt="Output Image 2" style="width: 30%;">
+  <img src="examples/img3.jpg" alt="Output Image 3" style="width: 30%;">
+</div>
+```
 
 ## Image Filters and Parameters
 
@@ -125,7 +144,7 @@ Each filter can be applied to an image, and the parameters allow for fine-tuning
 
 ## TODO
 
-- automatic json generator
+- actual corruption of jpg, png...
 - ASCII filter
 - SAM
   - <https://crates.io/crates/usls>

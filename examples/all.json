@@ -48,29 +48,6 @@
       "params": {
         "angle": 90
       }
-    },
-    {
-      "name": "desync",
-      "params": {
-        "x_shift": 15,
-        "y_shift": -8
-      }
-    },
-    {
-      "name": "wind",
-      "params": {
-        "direction": "right",
-        "strength": 12
-      }
-    },
-    {
-      "name": "scan-lines",
-      "params": {
-        "line_thickness": 3,
-        "line_spacing": 12,
-        "opacity": 0.1,
-        "angle": 15.0
-      }
     }
   ]
 }
