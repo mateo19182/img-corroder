@@ -261,6 +261,7 @@ dependencies = [
  "rand",
  "serde",
  "serde_json",
+ "simple-base64",
 ]
 
 [[package]]
@@ -493,6 +494,12 @@ dependencies = [
  "ryu",
  "serde",
 ]
+
+[[package]]
+name = "simple-base64"
+version = "0.23.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6385ef05b7bbfddaa8bf6306d059adac087990d659576c73b7da802d9a6ce91f"
 
 [[package]]
 name = "strsim"

@@ -7,6 +7,8 @@ mod colorfx;
 mod glitchfx;
 mod edgesfx;
 mod fx_json_generator;
+mod langsam_interface;
+
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -22,6 +24,11 @@ struct Args {
     /// Configuration file or number of effects
     #[arg(short, long)]
     config: Option<String>,
+
+    /// Prompt for Langsam
+    #[arg(short, long)]
+    prompt: Option<String>,
+
 }
 
 #[derive(Deserialize, Debug)]
@@ -45,6 +52,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     } else if let Some(config_path) = &args.config {
         let config_content = fs::read_to_string(config_path)?;
         // If config is a file, read and parse it
+        println!("Reading config from {:?}...", config_path);
         serde_json::from_str(&config_content)?
     } else {
         // If config doesn't exist or is invalid, use only 1 effect
@@ -52,18 +60,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         serde_json::from_str(&json)?
     };
 
-    let mut img = image::open(&args.input)?;
+    let img = if let Some(prompt) = args.prompt {
+        let path = args.input.to_str().unwrap();
+        match langsam_interface::run_langsam_python(path, &prompt) {
+            Ok(image_buffer) => {
+                println!("Successfully processed image with LangSAM");
+                image::DynamicImage::ImageRgba8(image_buffer)
+            },
+            Err(e) => {
+                eprintln!("Error running LangSAM: {}. Falling back to original image.", e);
+                image::open(&args.input)?
+            }
+        }
+    } else {
+        image::open(&args.input)?
+    };
+
+    let mut processed_img = img;  // Create a new variable for the processed image
 
     let total_start = Instant::now();
     for transform in config.transformations {
         let start = Instant::now();
-        img = apply_transformation(img, &transform)?;
+        processed_img = apply_transformation(processed_img, &transform)?;
         let duration = start.elapsed();
         println!("Applied {}. Time: {} ms. Params: {:?}", transform.name, duration.as_millis(), transform.params);
     }
     let total_duration = total_start.elapsed();
 
-    img.save(&args.output)?;
+    processed_img.save(&args.output)?;
     println!("Transformations applied and saved to {:?}", args.output);
     println!("Total time: {} ms", total_duration.as_millis());
 

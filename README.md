@@ -147,11 +147,11 @@ Below is a list of available filters and their parameters:
 Each filter can be applied to an image, and the parameters allow for fine-tuning of the effect. For more detailed information on each filter and its implementation, please refer to the source code.
 
 ## TODO
-
+- png not working some fxs...
 - actual corruption of jpg, png...
 - ASCII filter
 - SAM
-  - <https://crates.io/crates/usls>
+  - choose wheter to apply fx only there, mask the rest, mask prompt..
 - depth perception
   - <https://github.com/rozgo/monodepth-rs>
 
