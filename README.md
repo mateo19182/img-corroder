@@ -1,12 +1,28 @@
 # Img-Corroder
 
-A pipeline based image processing tool written in Rust for creating glitch effects.
+A pipeline based image processing tool written in Rust for creating glitch effects. Also segmentate parts of the image using text prompts.
 
 ## Usage
 
 ```sh
 cargo run -- -i examples/input-img.jpg -o output.jpg -c 10
 ```
+
+If you want to use the semantic segmentation, create an enviroment in the langSAM submodule and activate it:
+
+```sh
+python -m venv env
+bash env/bin/activate
+```
+
+then install the dependencies:
+
+```sh
+pip install -e .
+```
+
+If any problems arise, consult the [original repo](https://github.com/luca-medeiros/lang-segment-anything).
+
 
 ## Command-Line Interface
 
@@ -28,14 +44,16 @@ Build your own effect pipeline by following the example provided in `example_fx/
   <tr>
     <td><strong>Input Image</strong></td>
     <td><strong>Output Image 1</strong></td>
-    <td><strong>Output Image 2</strong></td>
-    <td><strong>Output Image 3</strong></td>
+    <td><strong>Output Image 2, random pipeline 10</strong></td>
+    <td><strong>Output Image 3, random pipeline 10</strong></td>
+    <td><strong>Segmentation with prompt "glasses", deepfry and extrusion edges</strong></td>
   </tr>
   <tr>
     <td><img src="examples/input-img.jpg" alt="Input Image" width="200"/></td>
     <td><img src="examples/img.jpg" alt="Output Image 1" width="200"/></td>
     <td><img src="examples/img2.jpg" alt="Output Image 2" width="200"/></td>
     <td><img src="examples/img3.jpg" alt="Output Image 3" width="200"/></td>
+    <td><img src="examples/seg-img.jpg" alt="Output Image 3width="200"/></td>
   </tr>
 </table>
 
@@ -151,9 +169,15 @@ Each filter can be applied to an image, and the parameters allow for fine-tuning
 - actual corruption of jpg, png...
 - ASCII filter
 - SAM
+  - use pyo3 better...
   - choose wheter to apply fx only there, mask the rest, mask prompt..
+  - fork lang-segment-anything and add as submodule... make barebones
 - depth perception
   - <https://github.com/rozgo/monodepth-rs>
+
+## Acknowledgements
+
+- <https://github.com/luca-medeiros/lang-segment-anything>
 
 ## References
 

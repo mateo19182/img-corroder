@@ -1,11 +1,22 @@
 {
-    "transformations": [
+  "transformations": [
 
-      {
-        "name":"deepfry",
-        "params": {
-          "factor": 4
-        }
+    {
+      "name": "extrusion_edge",
+      "params": {
       }
-    ]
-  }
+    }, 
+    {
+      "name":"brightness", 
+      "params": {
+        "factor": 1.9
+      }
+    },
+    {
+      "name": "deepfry",
+      "params": {
+        "factor": 2.0
+      }
+    }
+  ]
+}

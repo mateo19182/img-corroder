@@ -1,0 +1,6 @@
+[submodule "lang-segment-anything"]
+	path = lang-segment-anything
+	url = git@github.com:luca-medeiros/lang-segment-anything.git
+[submodule "langSAM"]
+	path = langSAM
+	url = git@github.com:mateo19182/langSAM.git
