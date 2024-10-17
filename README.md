@@ -6,6 +6,8 @@ A pipeline based image processing tool written in Rust for creating glitch effec
 
 ```sh
 cargo run -- -i examples/input-img.jpg -o output.jpg -c 10
+
+cargo run -- -i examples/input-img.jpg -o output.jpg -c examples/try.json -p "glasses"
 ```
 
 If you want to use the semantic segmentation, create an enviroment in the langSAM submodule and activate it:
@@ -22,7 +24,6 @@ pip install -e .
 ```
 
 If any problems arise, consult the [original repo](https://github.com/luca-medeiros/lang-segment-anything).
-
 
 ## Command-Line Interface
 
@@ -165,6 +166,7 @@ Below is a list of available filters and their parameters:
 Each filter can be applied to an image, and the parameters allow for fine-tuning of the effect. For more detailed information on each filter and its implementation, please refer to the source code.
 
 ## TODO
+
 - png not working some fxs...
 - actual corruption of jpg, png...
 - ASCII filter

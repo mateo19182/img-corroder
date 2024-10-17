@@ -10,8 +10,8 @@ pub fn run_langsam_python(image_path: &str, prompt: &str) -> Result<ImageBuffer<
         "prompt": prompt
     });
     print!("Running LangSAM Python script...");
-    let mut child = Command::new("lang-segment-anything/env/bin/python")
-        .arg("lang-segment-anything/api.py")
+    let mut child = Command::new("langSAM/env/bin/python")
+        .arg("langSAM/api.py")
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
