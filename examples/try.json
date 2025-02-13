@@ -2,20 +2,36 @@
   "transformations": [
 
     {
-      "name": "extrusion_edge",
-      "params": {
-      }
-    }, 
-    {
       "name":"brightness", 
       "params": {
-        "factor": 1.9
+        "factor": 0.7
       }
     },
     {
+      "name": "contrast",
+      "params": {
+        "factor": 1.5
+      }
+    },
+    {
+      "name": "pixel_sort",
+      "params": {
+        "direction": "column",
+        "high-threshold": 170, 
+        "low-threshold": 0, 
+        "window_size": 200
+      }
+    },       {
+      "name":"brightness", 
+      "params": {
+        "factor": 1.25
+
+      }
+    }, 
+    {
       "name": "deepfry",
       "params": {
-        "factor": 2.0
+        "factor": 4
       }
     }
   ]

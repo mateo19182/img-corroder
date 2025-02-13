@@ -1,4 +1,3 @@
-
 use image::{DynamicImage, GenericImage, GenericImageView, ImageBuffer, Pixel, Rgb, Rgba, RgbaImage};
 use rand::Rng;
 
@@ -114,7 +113,7 @@ pub fn desync(img: &DynamicImage, x_shift: i32, y_shift: i32) -> Result<DynamicI
     Ok(DynamicImage::ImageRgba8(output))
 }
 
-pub fn wind(img: &DynamicImage, direction: &String, strength: u32) -> Result<DynamicImage, String> {
+pub fn wind(img: &DynamicImage, direction: &str, strength: u32) -> Result<DynamicImage, String> {
 
     let (width, height) = img.dimensions();
     let mut output = RgbaImage::new(width, height);
@@ -124,7 +123,7 @@ pub fn wind(img: &DynamicImage, direction: &String, strength: u32) -> Result<Dyn
             let mut accumulator = [0u32; 4];
             let mut count = 0;
             for i in 0..strength {
-                let (sample_x, sample_y) = match direction.as_str() {
+                let (sample_x, sample_y) = match direction {
                     "up" => (x, (y + i).min(height - 1)),
                     "down" => (x, y.saturating_sub(i)),
                     "left" => ((x + i).min(width - 1), y),

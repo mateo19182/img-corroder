@@ -32,12 +32,12 @@
       "params": {
         "amount": 60,
         "max_offset": 12,
-        "direction": "vertical",
+        "direction": "row",
         "noisy": true
       }
     },
     {
-      "name": "pixel-sort",
+      "name": "pixel_sort",
       "params": {
         "mode": "row",
         "high-threshold": 55

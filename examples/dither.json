@@ -1,0 +1,12 @@
+{
+  "transformations": [
+    {
+      "name": "dither",
+      "params": {
+        "levels": 2,
+        "matrix_size": 10000,
+        "threshold_bias": 0.05
+      }
+    }
+  ]
+}

@@ -186,3 +186,11 @@ Each filter can be applied to an image, and the parameters allow for fine-tuning
 - [PPG](https://github.com/tmick0/ppg): Applies transforms to actual decoded images, then introduces errors to the transformed data before reversing the transform to obtain an altered image. More information about the philosophy behind PPG can be found [here](https://lo.calho.st/posts/image-glitching/).
 - [glitch_png](https://github.com/KernelEquinox/glitch_png)
 - [Rust-Wasm-Image-Glitch](https://github.com/felixfaire/Rust-Wasm-Image-Glitch): Cool ones.
+
+# Dithering Filter Example
+
+You can test the new dithering filter by running the following command:
+
+cargo run -- --input examples/input.png --output examples/dithered.png --config examples/dither.json
+
+This applies the dithering effect with 8 quantization levels and a 4x4 dither matrix (levels: 8, size: 4).

@@ -3,6 +3,9 @@ use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
 use std::time::Instant;
+use log::{info, error, warn, debug};
+use env_logger;
+use image::{self, GenericImageView};
 mod colorfx;
 mod glitchfx;
 mod edgesfx;
@@ -43,53 +46,105 @@ struct Config {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Initialize the logger
+    env_logger::init();
+
     let args = Args::parse();
+    info!("Starting image processing with input: {:?}, output: {:?}", args.input, args.output);
+
+    // Open the image; image::open auto-detects the file type
+    if !args.input.exists() {
+        error!("Input file {:?} does not exist", args.input);
+        return Err("Input file does not exist".into());
+    }
+    let img = image::open(&args.input)?;
+    info!("Successfully loaded input image: {:?} ({}x{})", 
+          args.input, 
+          img.width(), 
+          img.height());
+    
+    // Convert to a standard format (e.g., RGBA8) for consistent processing.
+    let standardized_img = image::DynamicImage::ImageRgba8(img.to_rgba8());
 
     let config: Config = if let Some(num_effects) = args.config.as_ref().and_then(|s| s.parse::<usize>().ok()) {
-        // If config is a number, generate JSON for that number of effects
+        info!("Generating random pipeline with {} effects", num_effects);
         let json = fx_json_generator::generate_random_pipeline(num_effects).to_string();
         serde_json::from_str(&json)?
     } else if let Some(config_path) = &args.config {
+        if !PathBuf::from(config_path).exists() {
+            error!("Config file {:?} does not exist", config_path);
+            return Err("Config file does not exist".into());
+        }
         let config_content = fs::read_to_string(config_path)?;
-        // If config is a file, read and parse it
-        println!("Reading config from {:?}...", config_path);
+        info!("Reading config from {:?} (content length: {})", config_path, config_content.len());
+        debug!("Config content: {}", config_content);
         serde_json::from_str(&config_content)?
     } else {
-        // If config doesn't exist or is invalid, use only 1 effect
+        info!("No config specified, generating single random effect");
         let json = fx_json_generator::generate_random_pipeline(1).to_string();
         serde_json::from_str(&json)?
     };
 
+    info!("Loaded {} transformations to apply", config.transformations.len());
+    
     let img = if let Some(prompt) = args.prompt {
+        info!("Processing image with LangSAM using prompt: {}", prompt);
         let path = args.input.to_str().unwrap();
         match langsam_interface::run_langsam_python(path, &prompt) {
             Ok(image_buffer) => {
-                println!("Successfully processed image with LangSAM");
+                info!("Successfully processed image with LangSAM");
                 image::DynamicImage::ImageRgba8(image_buffer)
             },
             Err(e) => {
-                eprintln!("Error running LangSAM: {}. Falling back to original image.", e);
+                error!("Error running LangSAM: {}. Falling back to original image.", e);
                 image::open(&args.input)?
             }
         }
     } else {
-        image::open(&args.input)?
+        standardized_img
     };
 
-    let mut processed_img = img;  // Create a new variable for the processed image
-
+    let mut processed_img = img;
     let total_start = Instant::now();
-    for transform in config.transformations {
+    for (i, transform) in config.transformations.iter().enumerate() {
+        debug!("Applying transformation {}/{}: {} with params: {:?}", 
+               i + 1, 
+               config.transformations.len(), 
+               transform.name, 
+               transform.params);
         let start = Instant::now();
         processed_img = apply_transformation(processed_img, &transform)?;
         let duration = start.elapsed();
-        println!("Applied {}. Time: {} ms. Params: {:?}", transform.name, duration.as_millis(), transform.params);
+        info!(
+            "Applied {}/{}: {}. Time: {} ms. Params: {:?}",
+            i + 1,
+            config.transformations.len(),
+            transform.name,
+            duration.as_millis(),
+            transform.params
+        );
     }
     let total_duration = total_start.elapsed();
 
+    // Check if output directory exists
+    if let Some(parent) = args.output.parent() {
+        if !parent.as_os_str().is_empty() && !parent.exists() {
+            error!("Output directory {:?} does not exist", parent);
+            return Err("Output directory does not exist".into());
+        }
+    }
+
+    // Log the absolute path where we'll save the file
+    let absolute_output = if args.output.is_absolute() {
+        args.output.clone()
+    } else {
+        std::env::current_dir()?.join(&args.output)
+    };
+    info!("Saving output to: {:?}", absolute_output);
+
     processed_img.save(&args.output)?;
-    println!("Transformations applied and saved to {:?}", args.output);
-    println!("Total time: {} ms", total_duration.as_millis());
+    info!("Transformations applied and saved to {:?}", args.output);
+    info!("Total time: {} ms", total_duration.as_millis());
 
     Ok(())
 }
@@ -139,6 +194,13 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
         },
         "vaporwave" => {
             Ok(colorfx::vaporwave(&img)?)
+        },
+        "dither" => {
+            let levels = transform.params["levels"].as_u64().unwrap_or(4) as u8;
+            let matrix_size = transform.params.get("matrix_size").and_then(|v| v.as_u64()).map(|v| v as u32);
+            let point_size = transform.params.get("point_size").and_then(|v| v.as_u64()).map(|v| v as u32);
+            let threshold_bias = transform.params.get("threshold_bias").and_then(|v| v.as_f64()).map(|v| v as f32);
+            Ok(colorfx::dither(&img, levels, matrix_size, point_size, threshold_bias)?)
         },
         "neon_edge" => {
             let strength = transform.params["strength"].as_f64().unwrap_or(1.0) as f32;
@@ -217,7 +279,7 @@ fn apply_transformation(img: image::DynamicImage, transform: &TransformConfig) -
             Ok(glitchfx::scan_lines(&img, Some(line_thickness), Some(line_spacing), Some(angle), Some(opacity))?)
         },
         _ => {
-            print!("Invalid transformation specified: {}", transform.name);
+            warn!("Invalid transformation specified: {}", transform.name);
             Ok(img)
         }
     }
